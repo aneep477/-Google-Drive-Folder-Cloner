@@ -5,65 +5,147 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    body { background: #f0f2f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    .main-card { max-width: 700px; margin: 50px auto; border: none; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
-    .header-section { background: linear-gradient(135deg, #4285F4, #34A853); color: white; padding: 40px; text-align: center; }
-    .content-section { background: white; padding: 40px; }
-    #progressBarContainer { display: none; }
-    .progress { height: 25px; border-radius: 50px; }
-    #logBox { height: 120px; overflow-y: auto; background: #212529; color: #39FF14; font-family: monospace; font-size: 12px; padding: 10px; border-radius: 8px; margin-top: 15px; }
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.1);
+      --glass-border: rgba(255, 255, 255, 0.2);
+      --accent-color: #00d2ff;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    /* Kesan Glassmorphism */
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid var(--glass-border);
+      border-radius: 25px;
+      padding: 40px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-control {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      color: white;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .form-control:focus {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 15px var(--accent-color);
+    }
+
+    .btn-futuristic {
+      background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+      border: none;
+      color: white;
+      font-weight: bold;
+      letter-spacing: 1px;
+      border-radius: 12px;
+      padding: 15px;
+      transition: 0.3s;
+      text-transform: uppercase;
+    }
+
+    .btn-futuristic:hover {
+      box-shadow: 0 0 25px var(--accent-color);
+      transform: scale(1.02);
+    }
+
+    /* Progress Bar Futuristik */
+    .progress {
+      height: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      background: linear-gradient(90deg, #00f2fe, #4facfe);
+      box-shadow: 0 0 10px #4facfe;
+    }
+
+    #logBox {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      color: #00ffc3;
+      height: 100px;
+      overflow-y: auto;
+      padding: 10px;
+      margin-top: 20px;
+      border: 1px solid var(--glass-border);
+    }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <div class="card main-card">
-    <div class="header-section">
-      <i class="fab fa-google-drive fa-3x mb-3"></i>
-      <h2>Drive Folder Cloner</h2>
-      <p>Salin keseluruhan isi folder secara tersusun</p>
+<div class="glass-card">
+  <div class="text-center mb-4">
+    <i class="fab fa-google-drive fa-3x mb-3" style="color: var(--accent-color)"></i>
+    <h2 class="fw-bold">DRIVE CLONER <span style="color: var(--accent-color)">PRO</span></h2>
+    <p class="small text-light opacity-75">Futuristic Data Mirroring System</p>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label small fw-bold text-uppercase">Source Folder URL</label>
+    <input type="text" id="urlSumber" class="form-control" placeholder="https://drive.google.com/...">
+  </div>
+
+  <div class="mb-4">
+    <label class="form-label small fw-bold text-uppercase">Target Folder URL</label>
+    <input type="text" id="urlTarget" class="form-control" placeholder="https://drive.google.com/...">
+  </div>
+
+  <button id="btnMula" class="btn btn-futuristic w-100" onclick="jalankanProses()">
+    Execute Clone <i class="fas fa-bolt ms-2"></i>
+  </button>
+
+  <div id="progressBarContainer" style="display: none;" class="mt-4">
+    <div class="d-flex justify-content-between mb-2">
+      <span id="statusTxt" class="small fw-bold">INITIALIZING...</span>
+      <span id="percentTxt" class="small fw-bold">0%</span>
     </div>
-
-    <div class="content-section">
-      <div class="mb-4">
-        <label class="form-label fw-bold"><i class="fas fa-link me-2"></i>URL Folder Sumber</label>
-        <input type="text" id="urlSumber" class="form-control form-control-lg" placeholder="Tampal pautan folder yang ingin dicopy">
-      </div>
-
-      <div class="mb-4">
-        <label class="form-label fw-bold"><i class="fas fa-folder-open me-2"></i>URL Folder Sasaran (Drive Anda)</label>
-        <input type="text" id="urlTarget" class="form-control form-control-lg" placeholder="Tampal pautan folder destinasi anda">
-      </div>
-
-      <button id="btnMula" class="btn btn-primary btn-lg w-100 shadow-sm" onclick="jalankanProses()">
-        <i class="fas fa-copy me-2"></i>Mula Salin Sekarang
-      </button>
-
-      <div id="progressBarContainer" class="mt-5">
-        <div class="d-flex justify-content-between mb-2">
-          <span id="statusTxt" class="fw-bold text-primary">Memproses...</span>
-          <span id="percentTxt" class="fw-bold">0%</span>
-        </div>
-        <div class="progress">
-          <div id="pBar" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%"></div>
-        </div>
-        <div id="logBox">Menunggu input...</div>
-      </div>
+    <div class="progress">
+      <div id="pBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
     </div>
+    <div id="logBox">> Ready for operation...</div>
   </div>
 </div>
 
 <script>
   let isRunning = false;
 
-  // Menghalang penutupan tab secara tidak sengaja
   window.onbeforeunload = function() {
-    if (isRunning) return "Penyalinan sedang berjalan. Jika anda keluar, proses mungkin terhenti!";
+    if (isRunning) return "System is processing data. Terminal shutdown will cause data fragmentation!";
   };
 
   function updateLog(msg) {
     const logBox = document.getElementById('logBox');
-    logBox.innerHTML += `> ${msg}<br>`;
+    logBox.innerHTML += `<br>> ${msg}`;
     logBox.scrollTop = logBox.scrollHeight;
   }
 
@@ -71,44 +153,43 @@
     const s = document.getElementById('urlSumber').value;
     const t = document.getElementById('urlTarget').value;
 
-    if(!s || !t) { alert("Sila masukkan kedua-dua URL!"); return; }
+    if(!s || !t) { alert("Missing target or source URL!"); return; }
 
     isRunning = true;
     document.getElementById('btnMula').disabled = true;
     document.getElementById('progressBarContainer').style.display = 'block';
-    updateLog("Menghubungi server Google...");
+    updateLog("System: Establishing secure handshake...");
 
     google.script.run
       .withSuccessHandler((res) => {
         isRunning = false;
         document.getElementById('pBar').style.width = "100%";
         document.getElementById('percentTxt').innerText = "100%";
-        document.getElementById('statusTxt').innerText = "SELESAI!";
-        updateLog(`Berjaya menyalin folder: ${res.folderName}`);
-        alert("Penyalinan Tamat dengan Berjaya!");
+        document.getElementById('statusTxt').innerText = "COMPLETED";
+        updateLog(`Success: Folder [${res.folderName}] has been mirrored.`);
+        alert("Operation Success: Folder Cloned!");
       })
       .withFailureHandler((err) => {
         isRunning = false;
-        alert("Ralat: " + err.message);
+        alert("System Error: " + err.message);
         document.getElementById('btnMula').disabled = false;
-        updateLog("Ralat berlaku: " + err.message);
       })
       .mulakanSalinan(s, t);
 
-    // Animasi Progress Bar
     let w = 0;
     let interval = setInterval(() => {
       if (w < 95 && isRunning) {
-        w += 1;
+        w += Math.floor(Math.random() * 3);
+        if(w > 95) w = 95;
         document.getElementById('pBar').style.width = w + "%";
         document.getElementById('percentTxt').innerText = w + "%";
-        if(w == 10) updateLog("Mengenalpasti struktur folder...");
-        if(w == 40) updateLog("Menyalin fail-fail...");
-        if(w == 70) updateLog("Menyalin sub-folder...");
+        if(w == 15) updateLog("Scanning source metadata...");
+        if(w == 45) updateLog("Injecting files to target...");
+        if(w == 75) updateLog("Verifying directory integrity...");
       } else {
         clearInterval(interval);
       }
-    }, 1500);
+    }, 1000);
   }
 </script>
 
