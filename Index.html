@@ -1,89 +1,57 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            background: radial-gradient(circle at top right, #1e293b, #020617);
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .glass {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-    </style>
-</head>
-<body>
-    <div class="glass p-10 rounded-[2rem] w-full max-w-md mx-4 shadow-2xl">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-white tracking-tight">Drive Cloner <span class="text-blue-500">Pro</span></h1>
-            <p class="text-gray-400 mt-2 text-sm text-balance">Klon folder secara rekursif terus ke Drive anda.</p>
-        </div>
+function doGet(e) {
+  // Paparkan UI Utama jika tiada arahan salin
+  if (!e.parameter.source) {
+    return HtmlService.createTemplateFromFile('index')
+        .evaluate()
+        .setTitle('Drive Cloner Pro')
+        .addMetaTag('viewport', 'width=device-width, initial-scale=1')
+        .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  }
 
-        <div class="space-y-5">
-            <div>
-                <label class="block text-xs font-semibold text-blue-400 uppercase tracking-[0.1em] mb-2 ml-1">Folder Sumber</label>
-                <input type="text" id="source" placeholder="Tampal URL Folder asal..." 
-                       class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all">
-            </div>
-            
-            <div>
-                <label class="block text-xs font-semibold text-blue-400 uppercase tracking-[0.1em] mb-2 ml-1">Folder Sasaran</label>
-                <input type="text" id="target" placeholder="Tampal URL Folder sasaran..." 
-                       class="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all">
-            </div>
+  try {
+    // 1. Akses Sheet Aktif
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheets()[0];
+    
+    // 2. Ekstrak ID dari URL yang dimasukkan
+    const sourceId = extractId(e.parameter.source);
+    const targetId = extractId(e.parameter.target);
+    
+    // 3. Catat Log Permulaan ke Sheet
+    sheet.appendRow([new Date(), "🚀 MEMULAKAN", "Sumber: " + sourceId, "Sasaran: " + targetId]);
+    
+    // 4. Proses Penyalinan
+    const sourceFolder = DriveApp.getFolderById(sourceId);
+    const targetFolder = DriveApp.getFolderById(targetId);
+    
+    copyFolder(sourceFolder, targetFolder);
+    
+    // 5. Catat Log Selesai
+    sheet.appendRow([new Date(), "✅ SELESAI", "Status: Berjaya", "Sistem: Automasi Pro"]);
+    
+    return ContentService.createTextOutput("Success");
+  } catch (err) {
+    // Catat Ralat jika berlaku
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    ss.getSheets()[0].appendRow([new Date(), "❌ RALAT", err.message]);
+    return ContentService.createTextOutput("Error: " + err.message);
+  }
+}
 
-            <button onclick="startCopy()" id="btnAction"
-                    class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-900/20 transition-all flex items-center justify-center group">
-                <span id="btnText">Mula Salin Sekarang</span>
-            </button>
-        </div>
-        
-        <div id="statusBox" class="mt-6 p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 hidden">
-            <p id="statusMsg" class="text-center text-xs text-blue-300 italic"></p>
-        </div>
-    </div>
+function extractId(url) {
+  const match = url.match(/[-\w]{25,}/);
+  return match ? match[0] : url;
+}
 
-    <script>
-        function startCopy() {
-            const source = document.getElementById('source').value;
-            const target = document.getElementById('target').value;
-            const btn = document.getElementById('btnAction');
-            const btnText = document.getElementById('btnText');
-            const statusBox = document.getElementById('statusBox');
-            const statusMsg = document.getElementById('statusMsg');
-
-            if (!source || !target) {
-                alert("⚠️ Sila isi maklumat folder!");
-                return;
-            }
-
-            // Aktifkan Visual "Sedang Copy"
-            btn.disabled = true;
-            btn.classList.add('opacity-50', 'cursor-not-allowed');
-            btnText.innerHTML = `<svg class="animate-spin h-5 w-5 text-white mr-2 inline" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Memproses Skrip...`;
-            
-            statusBox.classList.remove('hidden');
-            statusMsg.innerHTML = "🛠️ Sistem sedang menulis log ke Google Sheets dan memulakan proses klon di latar belakang.";
-
-            // Hantar data ke backend
-            const scriptUrl = window.location.href.split('?')[0];
-            const finalUrl = `${scriptUrl}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}`;
-
-            const img = new Image();
-            img.src = finalUrl;
-
-            // Simulasi respon berjaya
-            setTimeout(() => {
-                btnText.innerHTML = "✅ Arahan Dihantar";
-                btn.classList.replace('bg-blue-600', 'bg-green-600');
-                statusMsg.innerHTML = "✨ <b>Berjaya!</b> Log telah dicatat dalam Sheet. Folder anda akan mula dipenuhi fail sebentar lagi.";
-            }, 3500);
-        }
-    </script>
-</body>
-</html>
+function copyFolder(source, target) {
+  const files = source.getFiles();
+  while (files.hasNext()) {
+    files.next().makeCopy(target);
+  }
+  const subFolders = source.getFolders();
+  while (subFolders.hasNext()) {
+    const sub = subFolders.next();
+    const newSub = target.createFolder(sub.getName());
+    copyFolder(sub, newSub);
+  }
+}
