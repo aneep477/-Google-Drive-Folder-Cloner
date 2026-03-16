@@ -1,268 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Drive Cloner Pro | Glassmorphism</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap');
-
-    :root {
-      --primary-neon: #00f2fe;
-      --secondary-neon: #4facfe;
-      --glass-bg: rgba(255, 255, 255, 0.05);
-      --glass-border: rgba(255, 255, 255, 0.15);
-      --text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
-    }
-
-    body {
-      background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #e0e0e0;
-      font-family: 'Rajdhani', sans-serif;
-      margin: 0;
-      overflow: hidden;
-    }
-
-    /* Latar Belakang Animasi Aura */
-    body::before {
-      content: "";
-      position: absolute;
-      width: 300px;
-      height: 300px;
-      background: var(--primary-neon);
-      filter: blur(150px);
-      border-radius: 50%;
-      top: 10%;
-      left: 15%;
-      z-index: -1;
-      opacity: 0.2;
-    }
-
-    /* Kad Utama Glassmorphism */
-    .glass-container {
-      background: var(--glass-bg);
-      backdrop-filter: blur(25px) saturate(180%);
-      -webkit-backdrop-filter: blur(25px) saturate(180%);
-      border: 1px solid var(--glass-border);
-      border-radius: 30px;
-      padding: 50px;
-      width: 100%;
-      max-width: 650px;
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-      position: relative;
-      animation: slideUp 1s cubic-bezier(0.17, 0.67, 0.83, 0.67);
-    }
-
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(50px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    h2 {
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 700;
-      letter-spacing: 4px;
-      color: var(--primary-neon);
-      text-shadow: var(--text-shadow);
-      margin-bottom: 5px;
-    }
-
-    .form-label {
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      font-size: 0.8rem;
-      color: var(--primary-neon);
-    }
-
-    .form-control {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--glass-border);
-      border-radius: 15px;
-      color: #fff;
-      padding: 15px;
-      transition: all 0.4s ease;
-    }
-
-    .form-control:focus {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: var(--primary-neon);
-      box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
-      color: #fff;
-    }
-
-    /* Butang Futuristik */
-    .btn-execute {
-      background: linear-gradient(45deg, var(--secondary-neon), var(--primary-neon));
-      border: none;
-      border-radius: 15px;
-      color: #000;
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 700;
-      padding: 18px;
-      margin-top: 20px;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn-execute:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 0 30px var(--primary-neon);
-      color: #fff;
-    }
-
-    /* Terminal Log Style */
-    #console-log {
-      background: rgba(0, 0, 0, 0.6);
-      border: 1px solid var(--glass-border);
-      border-radius: 15px;
-      height: 120px;
-      padding: 15px;
-      font-family: 'Courier New', monospace;
-      font-size: 13px;
-      color: #00ffcc;
-      margin-top: 25px;
-      overflow-y: auto;
-      display: none;
-    }
-
-    /* Progress Bar Neon */
-    .progress-wrapper {
-      display: none;
-      margin-top: 30px;
-    }
-
-    .progress {
-      background: rgba(255, 255, 255, 0.1);
-      height: 10px;
-      border-radius: 20px;
-      overflow: visible;
-    }
-
-    .progress-bar {
-      background: var(--primary-neon);
-      box-shadow: 0 0 15px var(--primary-neon);
-      border-radius: 20px;
-      transition: width 0.5s ease;
-    }
-
-    #percentage {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.5rem;
-      text-align: center;
-      display: block;
-      margin-bottom: 10px;
-      color: var(--primary-neon);
-    }
-  </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: radial-gradient(circle at top right, #1e293b, #0f172a);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+    </style>
 </head>
 <body>
+    <div class="glass-card p-10 rounded-[2.5rem] w-full max-w-md mx-4 transition-all hover:border-blue-500/30">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-white tracking-tight">Drive Cloner <span class="text-blue-500">Pro</span></h1>
+            <p class="text-gray-400 mt-2 text-sm">Klon folder Google Drive dengan pantas</p>
+        </div>
 
-  <div class="glass-container">
-    <div class="text-center mb-5">
-      <div class="mb-3">
-        <i class="fab fa-google-drive fa-4x" style="color: var(--primary-neon); filter: drop-shadow(0 0 15px var(--primary-neon))"></i>
-      </div>
-      <h2>CORE CLONER</h2>
-      <p class="text-uppercase small opacity-50" style="letter-spacing: 5px;">Secure Data Replication</p>
+        <div class="space-y-5">
+            <div>
+                <label class="block text-xs font-semibold text-blue-400 uppercase tracking-wider mb-2 ml-1">Folder Sumber (ID/Link)</label>
+                <input type="text" id="source" placeholder="Tampal link folder asal..." 
+                       class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all placeholder:text-gray-600">
+            </div>
+            
+            <div>
+                <label class="block text-xs font-semibold text-blue-400 uppercase tracking-wider mb-2 ml-1">Folder Sasaran (ID/Link)</label>
+                <input type="text" id="target" placeholder="Tampal link folder tujuan..." 
+                       class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all placeholder:text-gray-600">
+            </div>
+
+            <button onclick="startCopy()" id="btnAction"
+                    class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-500/20 transition-all transform active:scale-[0.98]">
+                Mula Salin Sekarang
+            </button>
+        </div>
+        
+        <p id="status" class="text-center text-xs text-gray-500 mt-6 hidden italic"></p>
     </div>
 
-    <div class="mb-4">
-      <label class="form-label">Source Node (URL)</label>
-      <input type="text" id="sourceUrl" class="form-control" placeholder="https://drive.google.com/source-folder">
-    </div>
+    <script>
+        function startCopy() {
+            const source = document.getElementById('source').value;
+            const target = document.getElementById('target').value;
+            const btn = document.getElementById('btnAction');
+            const statusText = document.getElementById('status');
 
-    <div class="mb-5">
-      <label class="form-label">Destination Node (URL)</label>
-      <input type="text" id="targetUrl" class="form-control" placeholder="https://drive.google.com/target-folder">
-    </div>
+            if (!source || !target) {
+                alert("⚠️ Sila masukkan kedua-dua URL folder!");
+                return;
+            }
 
-    <button id="runBtn" class="btn btn-execute w-100" onclick="initiateSequence()">
-      INITIALIZE CLONE SEQUENCE <i class="fas fa-microchip ms-2"></i>
-    </button>
+            // UI Feedback
+            btn.disabled = true;
+            btn.innerText = "⚡ Menyambung ke Server...";
+            statusText.classList.remove('hidden');
+            statusText.innerText = "Sila tunggu, arahan sedang dihantar...";
 
-    <div class="progress-wrapper" id="progWrapper">
-      <span id="percentage">0%</span>
-      <div class="progress">
-        <div id="pBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
-      </div>
-      <div id="console-log"></div>
-    </div>
-  </div>
+            // Bina URL API (Auto-detect pautan semasa)
+            const scriptUrl = window.location.href.split('?')[0];
+            const finalUrl = `${scriptUrl}?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}`;
 
-  <script>
-    let activeProcess = false;
-
-    window.onbeforeunload = function() {
-      if (activeProcess) return "Data transmission in progress. Aborting now may cause packet loss!";
-    };
-
-    function addLog(text) {
-      const log = document.getElementById('console-log');
-      log.style.display = 'block';
-      log.innerHTML += `[SYSTEM]: ${text}<br>`;
-      log.scrollTop = log.scrollHeight;
-    }
-
-    function initiateSequence() {
-      const src = document.getElementById('sourceUrl').value;
-      const trg = document.getElementById('targetUrl').value;
-
-      if(!src || !trg) {
-        alert("CRITICAL ERROR: Input nodes missing.");
-        return;
-      }
-
-      activeProcess = true;
-      document.getElementById('runBtn').disabled = true;
-      document.getElementById('progWrapper').style.display = 'block';
-      addLog("Handshake initiated with Google Cloud Server...");
-
-      google.script.run
-        .withSuccessHandler((res) => {
-          activeProcess = false;
-          completeAnimation();
-          addLog("Sequence Complete: Mirroring Successful.");
-          alert("TRANSMISSION SUCCESSFUL");
-        })
-        .withFailureHandler((err) => {
-          activeProcess = false;
-          addLog("FATAL ERROR: " + err.message);
-          alert("SYSTEM BREACHED: " + err.message);
-        })
-        .mulakanSalinan(src, trg);
-
-      simulateProgress();
-    }
-
-    function simulateProgress() {
-      let p = 0;
-      let interval = setInterval(() => {
-        if (p < 98 && activeProcess) {
-          p += Math.floor(Math.random() * 2) + 1;
-          document.getElementById('pBar').style.width = p + "%";
-          document.getElementById('percentage').innerText = p + "%";
-          if(p == 20) addLog("Mapping source directory tree...");
-          if(p == 50) addLog("Copying bitstreams to destination...");
-          if(p == 85) addLog("Finalizing directory integrity...");
-        } else {
-          clearInterval(interval);
+            // Teknik Image Beacon untuk kestabilan penghantaran data
+            const img = new Image();
+            img.src = finalUrl;
+            
+            // Beri sedikit delay sebelum tunjuk success (kerana proses script ambil masa)
+            setTimeout(() => {
+                alert("✅ Arahan Diterima!\nSila semak folder sasaran anda sebentar lagi.");
+                btn.disabled = false;
+                btn.innerText = "Mula Salin Sekarang";
+                statusText.innerText = "Tugasan terakhir berjaya dihantar.";
+            }, 2500);
         }
-      }, 800);
-    }
-
-    function completeAnimation() {
-      document.getElementById('pBar').style.width = "100%";
-      document.getElementById('percentage').innerText = "100%";
-      document.getElementById('pBar').classList.remove('progress-bar-animated');
-    }
-  </script>
+    </script>
 </body>
+</html>
+
+    <script src="./script.js"></script>
+  </body>
 </html>
